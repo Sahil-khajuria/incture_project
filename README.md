@@ -55,3 +55,25 @@ mvn spring-boot:run
 3. **Account Locking** — 5 failed login attempts = 30-minute lockout
 4. **Soft Deletes** — No hard deletes; entities are deactivated
 5. **Project Close** — Releases all active allocations and recalculates bench
+
+## API Testing Proofs
+Below are screenshots showing the API tests in Postman, serving as proof of work for the endpoints:
+
+![Test 1](./testing1.png)
+![Test 2](./testing2.png)
+![Test 3](./testing3.png)
+![Test 4](./testing4.png)
+![Test 5](./testing5.png)
+![Test 6](./testing6.png)
+![Test 7](./testing7.png)
+![Test 8](./testing8.png)
+![Test 9](./testing9.png)
+![Test 10](./testing10.png)
+![Test 11](./testing11.png)
+![Test 12](./testing12.png)
+![Test 13](./testing13.png)
+![Test 14](./testing14.png)
+![Test 15](./testing15.png)
+![Test 16](./testing16.png)
+![Test 17](./testing17.png)
+![Test 18](./testing18.png)
