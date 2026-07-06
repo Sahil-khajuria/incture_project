@@ -1,0 +1,12 @@
+package com.erasm.service;
+import com.erasm.dto.request.SkillRequest; import com.erasm.dto.response.SkillResponse; import com.erasm.entity.Skill; import com.erasm.exception.*; import com.erasm.mapper.SkillMapper; import com.erasm.repository.SkillRepository; import com.erasm.util.AuditUtil; import org.springframework.stereotype.Service; import org.springframework.transaction.annotation.Transactional; import java.util.List; import java.util.stream.Collectors;
+
+@Service public class SkillService {
+    private final SkillRepository repo; private final SkillMapper mapper; private final AuditService audit; private final AuditUtil auditUtil;
+    public SkillService(SkillRepository r, SkillMapper m, AuditService a, AuditUtil au) { repo=r; mapper=m; audit=a; auditUtil=au; }
+    public List<SkillResponse> getAllSkills() { return repo.findByIsActiveTrue().stream().map(mapper::toResponse).collect(Collectors.toList()); }
+    public SkillResponse getSkillById(Long id) { return mapper.toResponse(repo.findById(id).orElseThrow(() -> new SkillNotFoundException("Skill not found: " + id))); }
+    @Transactional public SkillResponse createSkill(SkillRequest r) { if (repo.existsByNameIgnoreCase(r.getName())) throw new DuplicateResourceException("Skill exists: " + r.getName()); Skill s = repo.save(Skill.builder().name(r.getName()).category(r.getCategory()).description(r.getDescription()).isActive(true).build()); audit.log("SKILL",s.getId(),"CREATE",auditUtil.getCurrentUserEmail(),"Created: "+s.getName()); return mapper.toResponse(s); }
+    @Transactional public SkillResponse updateSkill(Long id, SkillRequest r) { Skill s = repo.findById(id).orElseThrow(() -> new SkillNotFoundException("Skill not found: " + id)); if (r.getName()!=null && !r.getName().equalsIgnoreCase(s.getName())) { if (repo.existsByNameIgnoreCase(r.getName())) throw new DuplicateResourceException("Skill exists: "+r.getName()); s.setName(r.getName()); } if(r.getCategory()!=null)s.setCategory(r.getCategory()); if(r.getDescription()!=null)s.setDescription(r.getDescription()); s = repo.save(s); audit.log("SKILL",id,"UPDATE",auditUtil.getCurrentUserEmail(),"Updated"); return mapper.toResponse(s); }
+    @Transactional public void softDeleteSkill(Long id) { Skill s = repo.findById(id).orElseThrow(() -> new SkillNotFoundException("Skill not found: " + id)); s.setIsActive(false); repo.save(s); audit.log("SKILL",id,"DELETE",auditUtil.getCurrentUserEmail(),"Soft-deleted"); }
+}

@@ -1,0 +1,13 @@
+package com.erasm.service;
+import com.erasm.dto.response.ReportResponse; import com.erasm.entity.*; import com.erasm.enums.AllocationStatus; import com.erasm.repository.*; import org.springframework.stereotype.Service; import java.util.*; import java.util.stream.Collectors;
+
+@Service public class ReportService {
+    private final EmployeeRepository empRepo; private final EmployeeSkillRepository esRepo; private final AllocationRepository allocRepo; private final SkillRepository skillRepo; private final ProjectRepository projRepo;
+    public ReportService(EmployeeRepository e, EmployeeSkillRepository es, AllocationRepository a, SkillRepository s, ProjectRepository p) { empRepo=e; esRepo=es; allocRepo=a; skillRepo=s; projRepo=p; }
+
+    public List<ReportResponse> getSkillReport() { return skillRepo.findByIsActiveTrue().stream().map(s -> { List<EmployeeSkill> emp = esRepo.findBySkillId(s.getId()); Map<String,Integer> byLvl = new HashMap<>(); List<ReportResponse.EmployeeSummary> emps = new ArrayList<>(); for(EmployeeSkill es:emp) { byLvl.merge(es.getLevel().name(),1,Integer::sum); emps.add(ReportResponse.EmployeeSummary.builder().id(es.getEmployee().getId()).name(es.getEmployee().getFirstName()+" "+es.getEmployee().getLastName()).level(es.getLevel().name()).build()); } return ReportResponse.builder().skill(s.getName()).totalEmployees(emp.size()).byLevel(byLvl).employees(emps).build(); }).collect(Collectors.toList()); }
+
+    public ReportResponse getUtilizationReport() { List<Employee> all = empRepo.findAll(); int bench=0,full=0,partial=0; List<ReportResponse.EmployeeSummary> sums = new ArrayList<>(); for(Employee e:all) { int t=allocRepo.sumActiveAllocationPercentage(e.getId()); if(t==0)bench++; else if(t==100)full++; else partial++; sums.add(ReportResponse.EmployeeSummary.builder().id(e.getId()).name(e.getFirstName()+" "+e.getLastName()).billable(t).bench(100-t).build()); } return ReportResponse.builder().totalEmployees(all.size()).benchCount(bench).fullyAllocatedCount(full).partiallyAllocatedCount(partial).employees(sums).build(); }
+
+    public List<ReportResponse> getProjectAllocationReport() { return projRepo.findAll().stream().map(p -> { List<Allocation> a = allocRepo.findByProjectIdAndStatus(p.getId(),AllocationStatus.ACTIVE); return ReportResponse.builder().project(p.getName()).status(p.getStatus().name()).allocatedEmployees(a.size()).employees(a.stream().map(al->ReportResponse.EmployeeSummary.builder().id(al.getEmployee().getId()).name(al.getEmployee().getFirstName()+" "+al.getEmployee().getLastName()).allocationPercentage(al.getAllocationPercentage()).build()).collect(Collectors.toList())).build(); }).collect(Collectors.toList()); }
+}

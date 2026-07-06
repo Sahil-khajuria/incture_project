@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>EmployeeSkill.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">erasm</a> &gt; <a href="index.source.html" class="el_package">com.erasm.entity</a> &gt; <span class="el_source">EmployeeSkill.java</span></div><h1>EmployeeSkill.java</h1><pre class="source lang-java linenums">package com.erasm.entity;
+
+import com.erasm.enums.SkillLevel;
+import jakarta.persistence.*;
+import lombok.*;
+import java.time.LocalDate;
+
+@Entity @Table(name = &quot;employee_skills&quot;, uniqueConstraints = {@UniqueConstraint(columnNames = {&quot;employee_id&quot;, &quot;skill_id&quot;})})
+<span class="pc bfc" id="L9" title="All 2 branches covered.">@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder</span>
+public class EmployeeSkill {
+<span class="fc" id="L11">    @Id @GeneratedValue(strategy = GenerationType.IDENTITY) private Long id;</span>
+<span class="nc" id="L12">    @ManyToOne(fetch = FetchType.LAZY) @JoinColumn(name = &quot;employee_id&quot;, nullable = false) private Employee employee;</span>
+<span class="nc" id="L13">    @ManyToOne(fetch = FetchType.EAGER) @JoinColumn(name = &quot;skill_id&quot;, nullable = false) private Skill skill;</span>
+<span class="fc" id="L14">    @Enumerated(EnumType.STRING) @org.hibernate.annotations.JdbcTypeCode(java.sql.Types.VARCHAR) @Column(nullable = false, length = 20) private SkillLevel level;</span>
+<span class="fc" id="L15">    @Column(name = &quot;years_of_experience&quot;) @Builder.Default private Double yearsOfExperience = 0.0;</span>
+<span class="fc" id="L16">    @Column(name = &quot;last_used_date&quot;) private LocalDate lastUsedDate;</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

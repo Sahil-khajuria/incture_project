@@ -1,0 +1,3 @@
+package com.erasm.repository;
+import com.erasm.entity.ResourceRequest; import com.erasm.enums.RequestStatus; import org.springframework.data.domain.Page; import org.springframework.data.domain.Pageable; import org.springframework.data.jpa.repository.JpaRepository; import org.springframework.stereotype.Repository; import java.util.List;
+@Repository public interface ResourceRequestRepository extends JpaRepository<ResourceRequest, Long> { Page<ResourceRequest> findByStatus(RequestStatus status, Pageable pageable); List<ResourceRequest> findByProjectId(Long projectId); List<ResourceRequest> findByProjectIdAndStatus(Long projectId, RequestStatus status); }

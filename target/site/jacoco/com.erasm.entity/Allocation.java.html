@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Allocation.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">erasm</a> &gt; <a href="index.source.html" class="el_package">com.erasm.entity</a> &gt; <span class="el_source">Allocation.java</span></div><h1>Allocation.java</h1><pre class="source lang-java linenums">package com.erasm.entity;
+import com.erasm.enums.AllocationStatus;
+import jakarta.persistence.*;
+import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
+@Entity @Table(name = &quot;allocations&quot;) @EntityListeners(AuditingEntityListener.class)
+<span class="pc bpc" id="L13" title="1 of 2 branches missed.">@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder</span>
+public class Allocation {
+<span class="fc" id="L15">    @Id @GeneratedValue(strategy = GenerationType.IDENTITY) private Long id;</span>
+<span class="fc" id="L16">    @ManyToOne(fetch = FetchType.LAZY) @JoinColumn(name = &quot;employee_id&quot;, nullable = false) private Employee employee;</span>
+<span class="nc" id="L17">    @ManyToOne(fetch = FetchType.LAZY) @JoinColumn(name = &quot;project_id&quot;, nullable = false) private Project project;</span>
+<span class="nc" id="L18">    @ManyToOne(fetch = FetchType.LAZY) @JoinColumn(name = &quot;resource_request_id&quot;) private ResourceRequest resourceRequest;</span>
+<span class="nc" id="L19">    @Column(name = &quot;allocation_percentage&quot;, nullable = false) private Integer allocationPercentage;</span>
+<span class="nc" id="L20">    @Column(name = &quot;start_date&quot;, nullable = false) private LocalDate startDate;</span>
+<span class="nc" id="L21">    @Column(name = &quot;end_date&quot;) private LocalDate endDate;</span>
+<span class="fc" id="L22">    @Enumerated(EnumType.STRING) @org.hibernate.annotations.JdbcTypeCode(java.sql.Types.VARCHAR) @Column(length = 50) @Builder.Default private AllocationStatus status = AllocationStatus.ACTIVE;</span>
+<span class="nc" id="L23">    @ManyToOne(fetch = FetchType.LAZY) @JoinColumn(name = &quot;allocated_by&quot;) private User allocatedBy;</span>
+<span class="nc" id="L24">    @CreatedDate @Column(name = &quot;created_at&quot;, updatable = false) private LocalDateTime createdAt;</span>
+<span class="nc" id="L25">    @LastModifiedDate @Column(name = &quot;updated_at&quot;) private LocalDateTime updatedAt;</span>
+<span class="nc" id="L26">    @LastModifiedBy @Column(name = &quot;modified_by&quot;, length = 150) private String modifiedBy;</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

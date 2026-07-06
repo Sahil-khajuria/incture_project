@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Employee.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">erasm</a> &gt; <a href="index.source.html" class="el_package">com.erasm.entity</a> &gt; <span class="el_source">Employee.java</span></div><h1>Employee.java</h1><pre class="source lang-java linenums">package com.erasm.entity;
+
+import jakarta.persistence.*;
+import lombok.*;
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
+@Entity @Table(name = &quot;employees&quot;) @EntityListeners(AuditingEntityListener.class)
+<span class="pc bpc" id="L16" title="2 of 10 branches missed.">@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder</span>
+public class Employee {
+<span class="fc" id="L18">    @Id @GeneratedValue(strategy = GenerationType.IDENTITY) private Long id;</span>
+<span class="fc" id="L19">    @OneToOne(fetch = FetchType.LAZY) @JoinColumn(name = &quot;user_id&quot;, nullable = false, unique = true) private User user;</span>
+<span class="fc" id="L20">    @Column(name = &quot;first_name&quot;, nullable = false, length = 100) private String firstName;</span>
+<span class="nc" id="L21">    @Column(name = &quot;last_name&quot;, nullable = false, length = 100) private String lastName;</span>
+<span class="nc" id="L22">    @Column(length = 20) private String phone;</span>
+<span class="nc" id="L23">    @Column(length = 100) private String department;</span>
+<span class="nc" id="L24">    @Column(length = 100) private String designation;</span>
+<span class="nc" id="L25">    @Column(name = &quot;date_of_joining&quot;) private LocalDate dateOfJoining;</span>
+<span class="nc" id="L26">    @Column(name = &quot;employment_type&quot;, length = 50) private String employmentType;</span>
+<span class="pc" id="L27">    @Column(name = &quot;bench_status&quot;) @Builder.Default private Boolean benchStatus = true;</span>
+<span class="pc" id="L28">    @Column(name = &quot;total_experience_years&quot;) @Builder.Default private Double totalExperienceYears = 0.0;</span>
+<span class="nc" id="L29">    @OneToMany(mappedBy = &quot;employee&quot;, cascade = CascadeType.ALL, orphanRemoval = true) @Builder.Default private List&lt;EmployeeSkill&gt; skills = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L30">    @OneToMany(mappedBy = &quot;employee&quot;, cascade = CascadeType.ALL, orphanRemoval = true) @Builder.Default private List&lt;Certification&gt; certifications = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L31">    @OneToMany(mappedBy = &quot;employee&quot;) @Builder.Default private List&lt;Allocation&gt; allocations = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L32">    @CreatedDate @Column(name = &quot;created_at&quot;, updatable = false) private LocalDateTime createdAt;</span>
+<span class="nc" id="L33">    @LastModifiedDate @Column(name = &quot;updated_at&quot;) private LocalDateTime updatedAt;</span>
+<span class="nc" id="L34">    @CreatedBy @Column(name = &quot;created_by&quot;, length = 150) private String createdBy;</span>
+<span class="nc" id="L35">    @LastModifiedBy @Column(name = &quot;modified_by&quot;, length = 150) private String modifiedBy;</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

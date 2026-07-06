@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ApiResponse.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">erasm</a> &gt; <a href="index.source.html" class="el_package">com.erasm.dto.response</a> &gt; <span class="el_source">ApiResponse.java</span></div><h1>ApiResponse.java</h1><pre class="source lang-java linenums">package com.erasm.dto.response;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.*;
+import java.time.LocalDateTime;
+import java.util.Map;
+
+<span class="pc bpc" id="L7" title="51 of 52 branches missed.">@Data @NoArgsConstructor @AllArgsConstructor @Builder @JsonInclude(JsonInclude.Include.NON_NULL)</span>
+public class ApiResponse&lt;T&gt; {
+<span class="fc" id="L9">    private boolean success; private String message; private T data;</span>
+<span class="pc" id="L10">    @Builder.Default private LocalDateTime timestamp = LocalDateTime.now();</span>
+<span class="fc" id="L11">    private String errorCode; private Map&lt;String, String&gt; errors;</span>
+
+<span class="fc" id="L13">    public static &lt;T&gt; ApiResponse&lt;T&gt; success(String message, T data) { return ApiResponse.&lt;T&gt;builder().success(true).message(message).data(data).timestamp(LocalDateTime.now()).build(); }</span>
+<span class="fc" id="L14">    public static &lt;T&gt; ApiResponse&lt;T&gt; success(T data) { return success(&quot;Success&quot;, data); }</span>
+<span class="fc" id="L15">    public static &lt;T&gt; ApiResponse&lt;T&gt; error(String message, String errorCode) { return ApiResponse.&lt;T&gt;builder().success(false).message(message).errorCode(errorCode).timestamp(LocalDateTime.now()).build(); }</span>
+<span class="fc" id="L16">    public static &lt;T&gt; ApiResponse&lt;T&gt; validationError(String message, Map&lt;String, String&gt; errors) { return ApiResponse.&lt;T&gt;builder().success(false).message(message).errorCode(&quot;VALIDATION_ERROR&quot;).errors(errors).timestamp(LocalDateTime.now()).build(); }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>JwtTokenProvider.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">erasm</a> &gt; <a href="index.source.html" class="el_package">com.erasm.security</a> &gt; <span class="el_source">JwtTokenProvider.java</span></div><h1>JwtTokenProvider.java</h1><pre class="source lang-java linenums">package com.erasm.security;
+import com.erasm.config.JwtConfig; import io.jsonwebtoken.*; import io.jsonwebtoken.security.Keys; import org.slf4j.Logger; import org.slf4j.LoggerFactory; import org.springframework.security.core.userdetails.UserDetails; import org.springframework.stereotype.Component;
+import java.security.Key; import java.util.Date; import java.util.function.Function;
+
+@Component public class JwtTokenProvider {
+<span class="fc" id="L6">    private static final Logger logger = LoggerFactory.getLogger(JwtTokenProvider.class);</span>
+    private final JwtConfig jwtConfig; private final Key signingKey;
+<span class="nc" id="L8">    public JwtTokenProvider(JwtConfig jwtConfig) { this.jwtConfig = jwtConfig; this.signingKey = Keys.hmacShaKeyFor(jwtConfig.getSecret().getBytes()); }</span>
+
+    public String generateAccessToken(UserDetails userDetails) {
+<span class="nc" id="L11">        String role = userDetails.getAuthorities().stream().findFirst().map(a -&gt; a.getAuthority().replace(&quot;ROLE_&quot;, &quot;&quot;)).orElse(&quot;&quot;);</span>
+<span class="nc" id="L12">        return Jwts.builder().setSubject(userDetails.getUsername()).claim(&quot;role&quot;, role).setIssuedAt(new Date()).setExpiration(new Date(System.currentTimeMillis() + jwtConfig.getAccessTokenExpiry())).signWith(signingKey, SignatureAlgorithm.HS256).compact();</span>
+    }
+<span class="nc" id="L14">    public String generateRefreshToken(String email) { return Jwts.builder().setSubject(email).setIssuedAt(new Date()).setExpiration(new Date(System.currentTimeMillis() + jwtConfig.getRefreshTokenExpiry())).signWith(signingKey, SignatureAlgorithm.HS256).compact(); }</span>
+<span class="nc" id="L15">    public boolean validateToken(String token) { try { Jwts.parserBuilder().setSigningKey(signingKey).build().parseClaimsJws(token); return true; } catch (Exception ex) { logger.warn(&quot;JWT validation failed: {}&quot;, ex.getMessage()); return false; } }</span>
+<span class="nc" id="L16">    public String getEmailFromToken(String token) { return extractClaim(token, Claims::getSubject); }</span>
+<span class="nc" id="L17">    public String getRoleFromToken(String token) { return extractAllClaims(token).get(&quot;role&quot;, String.class); }</span>
+<span class="nc" id="L18">    public Date getExpirationFromToken(String token) { return extractClaim(token, Claims::getExpiration); }</span>
+<span class="nc" id="L19">    public long getAccessTokenExpiry() { return jwtConfig.getAccessTokenExpiry(); }</span>
+<span class="nc" id="L20">    public long getRefreshTokenExpiry() { return jwtConfig.getRefreshTokenExpiry(); }</span>
+<span class="nc" id="L21">    private &lt;T&gt; T extractClaim(String token, Function&lt;Claims, T&gt; resolver) { return resolver.apply(extractAllClaims(token)); }</span>
+<span class="nc" id="L22">    private Claims extractAllClaims(String token) { return Jwts.parserBuilder().setSigningKey(signingKey).build().parseClaimsJws(token).getBody(); }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>
